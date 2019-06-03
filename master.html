@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Super Quizz temps réel !</title>
+  <!--  <style type="text/css">
+    audio{
+        visibility: hidden;
+    }
+
+</style>-->
+</head>
+
+<body>
+
+    <h1>Le super Quizz temps réel !</h1>
+    <div id="countdown" style="color:red;font-size: 150%"></div>
+    <div id="personnequibuzz" style="font-size: 300%;"></div>
+    <div id="hint"></div>
+    <button id="debloquer" onclick="debloquerlesbuzzers()">Debloquer les buzzers !</button><br />
+    <button id="debloquer" onclick="cligno()">Faire clignoter ! </button><br />
+    <button id="debloquer" onclick="test()">Faire clignoter ! </button><br />
+
+    <div id="affichage"></div>
+
+
+
+
+    <audio id="buzz1" controls>
+        <source src="son/buzz1.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+    </audio>
+
+    <audio id="buzz2" controls>
+        <source src="son/buzz2.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+    </audio>
+
+    <audio id="buzz3" controls>
+        <source src="son/buzz3.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+    </audio>
+
+    <audio id="buzz4" controls>
+        <source src="son/buzz4.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+    </audio>
+
+
+
+
+
+
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="noms.js"></script>
+    <script>
+        var son1 = document.getElementById("buzz1");
+        son1.load();
+        var son2 = document.getElementById("buzz2");
+        son2.load();
+        var son3 = document.getElementById("buzz3");
+        son3.load();
+        var son4 = document.getElementById("buzz4");
+        son4.load();
+        // Connexion à socket.io
+        var socket = io.connect('http://localhost:8080');
+
+        // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
+        var pseudo = "ADMIN";
+        socket.emit('nouveau_client', pseudo);
+        var nomJ = pseudo;
+        document.title = pseudo + ' - ' + document.title;
+
+        socket.on('qui', function (etatbuzz) {
+          console.log(etatbuzz);
+          if(etatbuzz== "1"){
+            son1.play();
+            document.getElementById("personnequibuzz").innerHTML =pseudo1;
+        } 
+        if(etatbuzz== "2"){
+           son2.play();
+           document.getElementById("personnequibuzz").innerHTML =pseudo2;
+       }
+       if(etatbuzz== "3"){
+          son3.play();
+          document.getElementById("personnequibuzz").innerHTML =pseudo3;
+      }
+      if(etatbuzz== "4"){
+         son4.play();
+         document.getElementById("personnequibuzz").innerHTML =pseudo4;
+     }
+ });
+
+
+        function ident1(){
+            socket.emit('identifier','1');
+        }
+        function ident2(){
+            socket.emit('identifier','2');
+        }
+
+        function ident3(){
+            socket.emit('identifier','3');
+        }
+
+        function ident4(){
+            socket.emit('identifier','4');
+        }
+
+
+
+        function debloquerlesbuzzers() {
+            socket.emit('reset', 'reset');
+            document.getElementById("personnequibuzz").innerHTML ="";
+        }
+
+
+        function test() {
+            socket.emit("test", "mmm");
+        }
+
+        function cligno() {
+            socket.emit("cligno3s", "mmm");
+        }
+    </script>
+</body>
+
+</html>
